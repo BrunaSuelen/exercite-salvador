@@ -9,10 +9,10 @@ const Menu = () => {
         <img src="images/exercite-logo.png"></img>
         <hr/>
         <ul>
-          <li><Link to="/">Início</Link></li>
-          <li><Link to="/#">Esportes</Link></li>
-          <li><Link to="/#">Eventos</Link></li>
-          <li><Link to="/turma">Turmas</Link></li>
+          <Link to="/"><li>Início</li></Link>
+          <Link to="/#"><li>Esportes</li></Link>
+          <Link to="/#"><li>Eventos</li></Link>
+          <Link to="/turma"><li>Turmas</li></Link>
         </ul>
       </div>
     </header>

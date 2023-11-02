@@ -1,18 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import './CardList.css';
 
-const CardList = ({ lista, consultarTurma }) => {
+const CardList = ({ consultarTurma, lista }) => {
+  console.log(lista)
   return (
     <div className="CardList">
-      <div className="card" onClick={consultarTurma(1)}>
-        <h3>Título</h3>
-        <h6>Localização</h6>
-        <p className='mt-1'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis egestas et sapien id tempus. Nunc nunc nisl, finibus vel dui ac, dignissim auctor tellus. Duis eget dictum elit.</p>
-        <h6 className='mt-3'>HORÁRIOS</h6>
-        <p>Horários</p>
-      </div>
+      { lista ? lista.map((content, index) => {
+        console.log(index)
+        return (
+          <div key={index} className="card" onClick={() => consultarTurma(content.id)}>
+            <h3>{content?.organizacao}</h3>
+            <h6>{content?.localizacao}</h6>
+            <p className='mt-1' dangerouslySetInnerHTML={{ __html: content?.descricao}}></p>
+            <h6 className='mt-3'>HORÁRIOS</h6>
+            <p dangerouslySetInnerHTML={{ __html: content?.horarios}}></p>
+          </div>
+        );
+        }) : ''
+      }
     </div>
   );
 }
 
-export default CardList;
+export default CardList

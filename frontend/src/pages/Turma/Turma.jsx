@@ -1,25 +1,72 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormTurma from '../../forms/FormTurma/FormTurma';
 import CardList from '../../components/CardList/CardList';
+import Notification from '../../components/Notification/Notification';
+import api from '../../services/api';
 import './Turma.css';
 
 function Turma() {
+  const [alert, setAlert] = useState({'show': false, 'message':'', 'variant':''});
   const [visualizarFormularioEdicao, setVisualizarFormularioEdicao] = useState(false);
   const [visualizarFormulario, setVisualizarFormulario] = useState(false);
   const [turma, setTurma] = useState();
+  const [listaTurma, setListaTurma] = useState([]);
 
   const consultarTurma = (indice) => {
+    setTurma(indice);
     setVisualizarFormulario(true);
     setVisualizarFormularioEdicao(true);
-    setTurma(indice);
+  }
+
+  useEffect(() => listarTurmas(), []);
+
+  function listarTurmas() {
+    api
+      .get("/turma", {})
+      .then((response) => response.data)
+      .then((data) => {
+        data = data.map((item) => {
+          item.descricao = item.descricao.replaceAll("\n", "<br>");
+          item.horarios = item.horarios.replaceAll("\n", "<br>");
+          return item;
+        });
+        
+        setListaTurma(data);
+      })
+      .catch((err) => {
+        console.error("ops! ocorreu um erro" + err);
+      });
+  }
+
+  function apagarTurma() {
+    api
+      .delete("/turma/"+ turma)
+      .then((response) => {
+        listarTurmas();
+        setVisualizarFormulario(false);
+        setVisualizarFormularioEdicao(false);
+        setAlert({
+          'show': true, 
+          'message': 'Turma excluida com sucesso', 
+          'variant': 'success'
+        })
+      })
+      .catch(() => {
+        setAlert({
+          'show': true, 
+          'message': 'Não foi possível excluir a turma', 
+          'variant': 'danger'
+        })
+      });
   }
 
   return (
     <div className="Turma">
+      {alert.show && <Notification props={{alert, setAlert}}/> }
       <div className='cabecalho'>
         <h6>Turmas</h6>
         { (visualizarFormularioEdicao) &&
-          <button className="botao-apagar">
+          <button className="botao-apagar" onClick={() => apagarTurma()}>
             Apagar
           </button>
         }
@@ -33,8 +80,11 @@ function Turma() {
 
 
       {(visualizarFormulario) 
-        ? <FormTurma></FormTurma> 
-        : <CardList consultarTurma={() => consultarTurma}></CardList>
+        ? <FormTurma indiceTurma={turma} consultarTurma={consultarTurma}></FormTurma> 
+        :( <CardList 
+            consultarTurma={consultarTurma}
+            lista={listaTurma}
+          ></CardList>)
       }
 
       { visualizarFormulario && 

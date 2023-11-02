@@ -40,7 +40,8 @@
   }
 }
 
-.menu-principal .menu-conteudo ul li a {
+.menu-principal .menu-conteudo ul li,
+.menu-principal .menu-conteudo ul a {
   color: #253B9D;
   text-decoration: none;
 
